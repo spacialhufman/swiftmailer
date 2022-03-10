@@ -91,7 +91,21 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
 
     public function startTLS()
     {
-        return stream_socket_enable_crypto($this->_stream, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+        $enable = true;
+
+        if (version_compare(PHP_VERSION, '7.0.0', '>=')) {
+            return stream_socket_enable_crypto(
+                $this->_stream,
+                $enable,
+                STREAM_CRYPTO_METHOD_TLS_CLIENT
+            );
+        }
+
+        return stream_socket_enable_crypto(
+            $this->_stream,
+            $enable,
+            STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT
+        );
     }
 
     /**
